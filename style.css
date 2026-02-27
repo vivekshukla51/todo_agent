@@ -353,24 +353,32 @@ body.dark-theme .theme-toggle .moon-icon {
 }
 
 .delete-btn {
-    background: var(--danger);
-    color: white;
-    border: none;
-    padding: 8px 15px;
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid transparent;
+    padding: 7px 8px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    flex-shrink: 0;
 }
 
 .delete-btn:hover {
-    background: #d63f3f;
-    transform: scale(1.05);
+    background: rgba(226, 77, 77, 0.12);
+    border-color: var(--danger);
+    transform: scale(1.1);
 }
 
 .delete-btn:active {
     transform: scale(0.98);
+}
+
+.delete-btn:focus-visible {
+    outline: 2px solid var(--danger);
+    outline-offset: 2px;
 }
 
 .empty-state {
@@ -382,6 +390,46 @@ body.dark-theme .theme-toggle .moon-icon {
     border: 1px dashed rgba(0, 0, 0, 0.08);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.35);
+}
+
+.progress-bar-wrap {
+    height: 6px;
+    background: var(--todo-bg);
+    border-radius: 999px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    display: none;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--btn-gradient-start), var(--btn-gradient-end));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+@keyframes fadeSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+        max-height: 80px;
+        margin-bottom: 10px;
+    }
+    to {
+        opacity: 0;
+        transform: translateX(30px);
+        max-height: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.todo-item.removing {
+    animation: fadeSlideOut 0.28s ease forwards;
+    overflow: hidden;
+    pointer-events: none;
 }
 
 @media (max-width: 520px) {

@@ -98,7 +98,14 @@ function renderTodos() {
         li.innerHTML = `
             <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="todo-text">${escapeHtml(todo.text)}</span>
-            <button class="delete-btn">Delete</button>
+            <button class="delete-btn" aria-label="Delete task">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                    <path d="M10 11v6M14 11v6"></path>
+                    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                </svg>
+            </button>
         `;
         
         // Toggle complete
@@ -124,9 +131,21 @@ function toggleTodo(id) {
 
 // Delete todo
 function deleteTodo(id) {
-    todos = todos.filter(todo => todo.id !== id);
-    saveTodos();
-    renderTodos();
+    const items = todoList.querySelectorAll('.todo-item');
+    const filteredTodos = getFilteredTodos();
+    const idx = filteredTodos.findIndex(t => t.id === id);
+    if (idx !== -1 && items[idx]) {
+        items[idx].classList.add('removing');
+        items[idx].addEventListener('animationend', () => {
+            todos = todos.filter(todo => todo.id !== id);
+            saveTodos();
+            renderTodos();
+        }, { once: true });
+    } else {
+        todos = todos.filter(todo => todo.id !== id);
+        saveTodos();
+        renderTodos();
+    }
 }
 
 // Clear completed todos
@@ -141,6 +160,14 @@ function updateMeta() {
     const remaining = todos.filter(todo => !todo.completed).length;
     itemsLeft.textContent = `${remaining} left`;
     clearCompleted.disabled = !todos.some(todo => todo.completed);
+
+    const total = todos.length;
+    const completed = total - remaining;
+    const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+    const progressBar = document.getElementById('progressBar');
+    const progressWrap = document.getElementById('progressWrap');
+    if (progressBar) progressBar.style.width = `${pct}%`;
+    if (progressWrap) progressWrap.style.display = total > 0 ? 'block' : 'none';
 }
 
 // Filter helpers
