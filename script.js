@@ -3,9 +3,14 @@ const todoInput = document.getElementById('todoInput');
 const addBtn = document.getElementById('addBtn');
 const todoList = document.getElementById('todoList');
 const themeToggle = document.getElementById('themeToggle');
+const filterButtons = document.querySelectorAll('.filter-btn');
+const itemsLeft = document.getElementById('itemsLeft');
+const clearCompleted = document.getElementById('clearCompleted');
+const inlineMessage = document.getElementById('inlineMessage');
 
 // Load todos from localStorage on page load
 let todos = JSON.parse(localStorage.getItem('todos')) || [];
+let currentFilter = 'all';
 
 // Initialize the app
 function init() {
@@ -14,12 +19,17 @@ function init() {
     
     // Event listeners
     addBtn.addEventListener('click', addTodo);
-    todoInput.addEventListener('keypress', (e) => {
+    todoInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             addTodo();
         }
     });
     themeToggle.addEventListener('click', toggleTheme);
+    todoInput.addEventListener('input', clearMessage);
+    clearCompleted.addEventListener('click', clearCompletedTodos);
+    filterButtons.forEach((btn) => {
+        btn.addEventListener('click', () => setFilter(btn.dataset.filter));
+    });
 }
 
 // Theme functions
@@ -41,7 +51,10 @@ function addTodo() {
     const text = todoInput.value.trim();
     
     if (text === '') {
-        alert('Please enter a task!');
+        showMessage('Add a task before hitting enter.');
+        todoInput.classList.remove('shake');
+        void todoInput.offsetWidth;
+        todoInput.classList.add('shake');
         return;
     }
     
@@ -54,6 +67,7 @@ function addTodo() {
     todos.push(todo);
     saveTodos();
     renderTodos();
+    clearMessage();
     
     // Clear input
     todoInput.value = '';
@@ -63,15 +77,24 @@ function addTodo() {
 // Render all todos
 function renderTodos() {
     todoList.innerHTML = '';
-    
-    if (todos.length === 0) {
-        todoList.innerHTML = '<div class="empty-state">No tasks yet. Add one above!</div>';
+    updateMeta();
+
+    const filteredTodos = getFilteredTodos();
+
+    if (filteredTodos.length === 0) {
+        const message = todos.length === 0
+            ? 'No tasks yet. Add one above!'
+            : currentFilter === 'active'
+                ? 'All caught up. No active tasks.'
+                : 'Nothing completed yet.';
+        todoList.innerHTML = `<div class="empty-state">${message}</div>`;
         return;
     }
     
-    todos.forEach(todo => {
+    filteredTodos.forEach((todo, index) => {
         const li = document.createElement('li');
         li.className = `todo-item${todo.completed ? ' completed' : ''}`;
+        li.style.animationDelay = `${index * 0.03}s`;
         li.innerHTML = `
             <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="todo-text">${escapeHtml(todo.text)}</span>
@@ -104,6 +127,51 @@ function deleteTodo(id) {
     todos = todos.filter(todo => todo.id !== id);
     saveTodos();
     renderTodos();
+}
+
+// Clear completed todos
+function clearCompletedTodos() {
+    todos = todos.filter(todo => !todo.completed);
+    saveTodos();
+    renderTodos();
+}
+
+// Update counters and controls
+function updateMeta() {
+    const remaining = todos.filter(todo => !todo.completed).length;
+    itemsLeft.textContent = `${remaining} left`;
+    clearCompleted.disabled = !todos.some(todo => todo.completed);
+}
+
+// Filter helpers
+function setFilter(filter) {
+    currentFilter = filter;
+    filterButtons.forEach((btn) => {
+        const isActive = btn.dataset.filter === filter;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+    renderTodos();
+}
+
+function getFilteredTodos() {
+    if (currentFilter === 'active') {
+        return todos.filter(todo => !todo.completed);
+    }
+    if (currentFilter === 'completed') {
+        return todos.filter(todo => todo.completed);
+    }
+    return todos;
+}
+
+function showMessage(text) {
+    inlineMessage.textContent = text;
+    inlineMessage.classList.add('show');
+}
+
+function clearMessage() {
+    inlineMessage.textContent = '';
+    inlineMessage.classList.remove('show');
 }
 
 // Save todos to localStorage

@@ -6,43 +6,51 @@
 
 :root {
     /* Light theme (default) */
-    --bg-gradient-start: #667eea;
-    --bg-gradient-end: #764ba2;
-    --container-bg: #ffffff;
-    --text-primary: #333333;
-    --text-secondary: #999999;
-    --input-border: #e0e0e0;
-    --input-focus: #667eea;
-    --todo-bg: #f8f9fa;
-    --todo-hover: #e9ecef;
-    --shadow-color: rgba(0, 0, 0, 0.2);
-    --btn-gradient-start: #667eea;
-    --btn-gradient-end: #764ba2;
-    --theme-toggle-bg: #f0f0f0;
-    --theme-toggle-hover: #e0e0e0;
+    --bg-gradient-start: #f8e9d2;
+    --bg-gradient-end: #b7e4c7;
+    --container-bg: #fffaf3;
+    --text-primary: #2f2a24;
+    --text-secondary: #7a6f63;
+    --input-border: #e3d7c6;
+    --input-focus: #1f8a70;
+    --todo-bg: #fff6ea;
+    --todo-hover: #f7eadb;
+    --shadow-color: rgba(32, 24, 14, 0.18);
+    --btn-gradient-start: #1f8a70;
+    --btn-gradient-end: #146c94;
+    --theme-toggle-bg: #efe5d7;
+    --theme-toggle-hover: #e4d6c5;
+    --accent: #f08a5d;
+    --accent-soft: rgba(240, 138, 93, 0.18);
+    --danger: #e24d4d;
 }
 
 body.dark-theme {
     /* Dark theme */
-    --bg-gradient-start: #1a1a2e;
-    --bg-gradient-end: #16213e;
-    --container-bg: #0f3460;
-    --text-primary: #e0e0e0;
-    --text-secondary: #a0a0a0;
-    --input-border: #2c4866;
-    --input-focus: #5c7cfa;
-    --todo-bg: #1a3a52;
-    --todo-hover: #234a66;
+    --bg-gradient-start: #1b1f1e;
+    --bg-gradient-end: #22303a;
+    --container-bg: #1a2630;
+    --text-primary: #f2e9df;
+    --text-secondary: #b7a99a;
+    --input-border: #2c3a45;
+    --input-focus: #48a9a6;
+    --todo-bg: #1f2d38;
+    --todo-hover: #263543;
     --shadow-color: rgba(0, 0, 0, 0.5);
-    --btn-gradient-start: #5c7cfa;
-    --btn-gradient-end: #4c6ef5;
-    --theme-toggle-bg: #234a66;
-    --theme-toggle-hover: #2c5875;
+    --btn-gradient-start: #48a9a6;
+    --btn-gradient-end: #2b7a78;
+    --theme-toggle-bg: #2a3b46;
+    --theme-toggle-hover: #324552;
+    --accent: #f2a154;
+    --accent-soft: rgba(242, 161, 84, 0.18);
+    --danger: #ff6b6b;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(1200px 600px at 10% -10%, rgba(255, 255, 255, 0.55), transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, rgba(255, 255, 255, 0.35), transparent 55%),
+        linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -59,6 +67,8 @@ body {
     width: 100%;
     max-width: 500px;
     transition: background 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(6px);
 }
 
 .header {
@@ -66,13 +76,28 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    gap: 12px;
+}
+
+.title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 h1 {
+    font-family: 'DM Serif Display', 'Times New Roman', serif;
     color: var(--text-primary);
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin: 0;
     transition: color 0.3s ease;
+    letter-spacing: 0.3px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0;
 }
 
 .theme-toggle {
@@ -87,6 +112,11 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 10px;
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .theme-toggle:hover {
@@ -137,6 +167,19 @@ body.dark-theme .theme-toggle .moon-icon {
 
 #todoInput:focus {
     border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+#todoInput.shake {
+    animation: inputShake 0.35s ease;
+}
+
+@keyframes inputShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
 }
 
 #addBtn {
@@ -153,11 +196,108 @@ body.dark-theme .theme-toggle .moon-icon {
 
 #addBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(92, 124, 250, 0.4);
+    box-shadow: 0 8px 18px rgba(31, 138, 112, 0.35);
 }
 
 #addBtn:active {
     transform: translateY(0);
+}
+
+#addBtn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.inline-message {
+    min-height: 20px;
+    margin: -10px 0 18px;
+    color: var(--danger);
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.inline-message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filters {
+    display: inline-flex;
+    background: var(--todo-bg);
+    padding: 6px;
+    border-radius: 999px;
+    gap: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.filter-btn {
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.filter-btn.active {
+    background: var(--container-bg);
+    color: var(--text-primary);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.filter-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.items-left {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.clear-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-primary);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.clear-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.clear-btn:not(:disabled):hover {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+.clear-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 #todoList {
@@ -213,7 +353,7 @@ body.dark-theme .theme-toggle .moon-icon {
 }
 
 .delete-btn {
-    background: #ff4757;
+    background: var(--danger);
     color: white;
     border: none;
     padding: 8px 15px;
@@ -225,7 +365,7 @@ body.dark-theme .theme-toggle .moon-icon {
 }
 
 .delete-btn:hover {
-    background: #ff3838;
+    background: #d63f3f;
     transform: scale(1.05);
 }
 
@@ -239,4 +379,28 @@ body.dark-theme .theme-toggle .moon-icon {
     padding: 40px 20px;
     font-size: 18px;
     transition: color 0.3s ease;
+    border: 1px dashed rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 520px) {
+    .container {
+        padding: 22px;
+    }
+
+    .input-section {
+        flex-direction: column;
+    }
+
+    #addBtn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
 }
